@@ -29,8 +29,8 @@ const BASIS_WEIGHT = Fraction( 1 );
 // vertices: Map<VertexId, Vertex>
 // edges: Map<VertexId, Map<VertexId, Edge>>
 
-// const equalWeightGraph = exports.equalWeightGraph = function( adjacencies, vertices = defaultVertices( adjacencies ) ) {
-const equalWeightGraph = exports.equalWeightGraph = function( adjacencies, vertices ) {
+// const balancedDag = exports.balancedDag = function( adjacencies, vertices = defaultVertices( adjacencies ) ) {
+const balancedDag = module.exports = exports = function( adjacencies, vertices ) {
 	if( vertices == null ) {
 		vertices = defaultVertices( adjacencies );
 	}
