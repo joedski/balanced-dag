@@ -37,16 +37,16 @@ If `vertices` is not provided, a default Map is created internally.  You should 
 
 #### Example
 
-Usual use case is this:
+Usual use case is this (in ES6):
 
 ```js
 let storyDag = daggifyMyStory( myStory );
 let { vertexProgresses } = equalWeightGraph( storyDag );
 
-// ...
+// some display component...
 
-const render = ({ props }) => {
-	let stepProgress = vertexProgresses.get( props.step.id );
+const render = ({ props, context }) => {
+	let stepProgress = context.vertexProgresses.get( props.step.id );
 
 	return (
 		h.( 'div', { 'class': 'interaction-progress' }, [
