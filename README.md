@@ -19,7 +19,7 @@ Dependencies
 API
 ---
 
-### equalWeightGraph( adjacencyList, vertices? )
+### balancedDag( adjacencyList, vertices? )
 
 Type: `( Map<VertexId, Set<VertexId>>, Map<VertexId, Vertex> ) => { vertexProgresses: Map<VertexId, VertexProgress>, edgeWeights: Map<VertexId, Map<VertexId, Edge>> }`
 
@@ -40,8 +40,11 @@ If `vertices` is not provided, a default Map is created internally.  You should 
 Usual use case is this (in ES6):
 
 ```js
+// During interaction initialization...
+
+import balancedDag from 'balanced-dag';
 let storyDag = daggifyMyStory( myStory );
-let { vertexProgresses } = equalWeightGraph( storyDag );
+let { vertexProgresses } = balancedDag( storyDag );
 
 // some display component...
 

@@ -31,15 +31,9 @@ const BASIS_WEIGHT = Fraction( 1 );
 
 // const balancedDag = exports.balancedDag = function( adjacencies, vertices = defaultVertices( adjacencies ) ) {
 const balancedDag = module.exports = exports = function( adjacencies, vertices ) {
-	if( vertices == null ) {
-		vertices = defaultVertices( adjacencies );
-	}
-
-	// sources: Set<VertexId>, sinks: Set<VertexId>
+	vertices = normalizeVertices( adjacencies, vertices );
 	vertices = withArtificialVertices( vertices );
-	// let { sources, sinks } = sourcesAndSinks( adjacencies );
-	// let edges = edgesWithArtificialVertices( adjacencies, { sources, sinks });
-	let edges = edgesWithArtificialVertices( adjacencies );
+	let edges = edgesWithArtificialVertices( adjacencies, vertices );
 	let paths = allPaths( edges );
 
 	edges = balancedEdges( edges, paths );
@@ -51,24 +45,32 @@ const balancedDag = module.exports = exports = function( adjacencies, vertices )
 	};
 }
 
+exports.ARTIFICIAL_START = ARTIFICIAL_START;
+exports.ARTIFICIAL_END = ARTIFICIAL_END;
+exports.BASIS_WEIGHT = BASIS_WEIGHT;
+
 
 
 //////// Internals
-// Note: There be dragons down here. (some are impure!)
 
-// adjacencies: Map<VertexId, Set<VertexId>>
-// vertices: Map<VertexId, Vertex>
-const defaultVertices = exports.defaultVertices = function( adjacencies ) {
-	let vertices = new Map();
+const normalizeVertices = exports.normalizeVertices = function( adjacencies, vertices ) {
+	let defaultVertex = () => ({ progress: true });
+
+	if( vertices == null ) {
+		vertices = new Map();
+	}
+	else {
+		vertices = new Map( vertices );
+	}
 
 	adjacencies.forEach( ( adjs, va ) => {
-		if( ! vertices.has( va ) ) {
-			vertices.set( va, { progress: true });
+		if( vertices.has( va ) === false ) {
+			vertices.set( va, defaultVertex() );
 		}
 
 		adjs.forEach( vb => {
-			if( ! vertices.has( vb ) ) {
-				vertices.set( vb, { progress: true });
+			if( vertices.has( vb ) === false ) {
+				vertices.set( vb, defaultVertex() );
 			}
 		});
 	});
@@ -114,7 +116,7 @@ const sourcesAndSinks = exports.sourcesAndSinks = function( adjacencies ) {
 	return { sources, sinks };
 }
 
-const edgesWithSourcesAndSinks = exports.edgesWithSourcesAndSinks = function( adjacencies ) {
+const edgesWithArtificialVertices = exports.edgesWithArtificialVertices = function( adjacencies, vertices ) {
 	let { sources, sinks } = sourcesAndSinks( adjacencies );
 	let initWeight = ( weight = null ) => ({ weight });
 	let edges = new Map();
@@ -131,16 +133,18 @@ const edgesWithSourcesAndSinks = exports.edgesWithSourcesAndSinks = function( ad
 	let startEdges = new Map();
 	edges.set( ARTIFICIAL_START, startEdges );
 
-	sources.forEach( vsource => {
-		startEdges.set( vsource, initWeight( vsource.progress === false ? Fraction( 0 ) : null ) );
+	sources.forEach( vsourceId => {
+		let vsource = vertices.get( vsourceId );
+		let weightValue = vsource.progress === false ? Fraction( 0 ) : null;
+		startEdges.set( vsourceId, initWeight( weightValue ) );
 	});
 
-	sinks.forEach( vsink => {
+	sinks.forEach( vsinkId => {
 		let endEdges = new Map([
 			[ ARTIFICIAL_END, initWeight( Fraction( 0 ) ) ]
 		]);
 
-		edges.set( vsink, endEdges );
+		edges.set( vsinkId, endEdges );
 	});
 
 	return edges;
@@ -160,8 +164,10 @@ const allPaths = exports.allPaths = function( edges ) {
 		let nextPaths = [];
 
 		nextEdges.forEach( ( e, v ) => {
-			nextPaths = [ ...nextPaths, ...dfs( edges, v, path ) ];
+			nextPaths = [ ...nextPaths, ...dfs( edges, v, currentPath ) ];
 		});
+
+		return nextPaths;
 	}
 
 	let paths = dfs( edges );
@@ -177,7 +183,7 @@ const balancedEdges = exports.balancedEdges = function( edges, paths ) {
 		let existing = Fraction( 0 );
 
 		weighted.forEach( e => {
-			existing.add( e.weight );
+			existing = existing.add( e.weight );
 		});
 
 		let remainingWeightPerUnweighted = BASIS_WEIGHT.sub( existing ).div( unweighted.size );
