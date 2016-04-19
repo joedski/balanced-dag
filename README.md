@@ -19,21 +19,21 @@ Dependencies
 API
 ---
 
-### balancedDag( adjacencyList, vertices? )
+### balancedDag( adjacencyList, vertexOptions? )
 
-Type: `( Map<VertexId, Set<VertexId>>, Map<VertexId, Vertex> ) => { vertexProgresses: Map<VertexId, VertexProgress>, edgeWeights: Map<VertexId, Map<VertexId, Edge>> }`
+Type: `( Map<VertexId, Set<VertexId>>, Map<VertexId, VertexOptions> ) => { vertexProgresses: Map<VertexId, VertexInfo>, edgeWeights: Map<VertexId, Map<VertexId, EdgeInfo>> }`
 
 Related Types:
 - `VertexId = any` though you should probably stick to `Symbol`, `string`, and `number`.
-- `Vertex = { progress?: boolean }`
+- `VertexOptions = { progress?: boolean }`
 	- `progress` indicates whether or not this vertex should contribute towards the user's progress through the branching interaction.
-- `VertexProgress = { progress: number, progressFraction: Fraction }`
+- `VertexInfo = { progress: number, progressFraction: Fraction }`
 	- `progress` is a number in the range of `[0.0 1.0]` indicating the user's progress through the interaction.
 	- `progressFraction` is a rational value used to calculate `progress`.
-- `Edge = { weight: Fraction }`
+- `EdgeInfo = { weight: Fraction }`
 	- `weight` The weight of this edge, which in this algorithm indicates by how much the user progresses when crossing this edge.
 
-If `vertices` is not provided, a default Map is created internally.  You should only need to provide your own `vertices` if you're specifying certain vertices as not contributing to user progress, which might occur for certain instructions, result-display, or summary pages,
+If `vertexOptions` is not provided, a default Map is created internally.  You should only need to provide your own `vertexOptions` if you're specifying certain vertices as not contributing to user progress, which might occur for certain instructions, result-display, or summary pages,
 
 #### Example
 
