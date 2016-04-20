@@ -33,16 +33,6 @@ test( "normalizeVertices with no user specified vertices", t => {
 
 
 
-// test( "normalizeVertices with no user specified vertices", t => {
-// 	let adjacencies = new Map([
-// 		[ 'foo', new Set([ 'bar', 'baz' ]) ],
-// 		[ 'bar', new Set([ 'baz' ]) ],
-// 		[ 'baz', new Set([ 'bing' ]) ]
-// 	]);
-
-// 	let vertices = balancedDag.normalizeVertices( adjacencies, undefined );
-// });
-
 test( "normalizeVertices with user specified vertices", t => {
 	let adjacencies = new Map([
 		[ 'foo', new Set([ 'bar', 'baz' ]) ],
