@@ -282,3 +282,8 @@ then iterate through each path and:
 	manually calculate the vertex progresses in each path in isolation.
 	Then, compare the re
 **/
+
+test.todo( "withoutArtificialVertices" );
+test.todo( "withoutArtificialVertexEdges" );
+
+test.todo( "balancedDag" );
