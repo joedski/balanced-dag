@@ -1,0 +1,70 @@
+[
+	{
+		"adjacencies": {
+			"foo": [ "bar", "baz" ],
+			"zip": [ "bar", "zappity" ],
+			"bar": [ "baz" ],
+			"zappity": [ "zop", "zoop" ],
+			"zop": [ "bing" ],
+			"baz": [ "bing" ]
+		},
+		"sources": [ "foo", "zip" ],
+		"sinks": [ "zoop", "bing" ],
+		"pathCount": 5,
+		"optionSets": {
+			"default": {
+				"vertexOptions": {}
+			}
+		}
+	},
+	{
+		"adjacencies": {
+			"a0": [ "a1" ],
+			"a1": [ "a2" ],
+			"a2": [ "a3" ],
+			"a3": [ "a4" ],
+			"a4": [ "a5" ],
+			"a5": [ "endA", "b3" ],
+			"b0": [ "b1" ],
+			"b1": [ "a3", "b2" ],
+			"b2": [ "endA", "b3" ],
+			"b3": [ "endB" ]
+		},
+		"sources": [ "a0", "b0" ],
+		"sinks": [ "endA", "endB" ],
+		"pathCount": 6,
+		"optionSets": {
+			"default": {
+				"vertexOptions": {}
+			}
+		}
+	},
+	{
+		"adjacencies": {
+			"a0": [ "a1", "b1" ],
+			"a1": [ "a2", "c2" ],
+			"a2": [ "a3" ],
+			"a3": [ "a4" ],
+			"a4": [ "a5" ],
+			"a5": [ "endA" ],
+			"b1": [ "b2" ],
+			"b2": [ "endB", "c2" ],
+			"c2": [ "c3" ],
+			"c3": [ "c4" ],
+			"c4": [ "a4", "endC" ]
+		},
+		"sources": [ "a0" ],
+		"sinks": [ "endA", "endB", "endC" ],
+		"pathCount": 6,
+		"optionSets": {
+			"default": {
+				"vertexOptions": {},
+			},
+			"noStartProgress": {
+				"vertexOptions": {
+					"a0": { "progress": false }
+				}
+			},
+		}
+	}
+]
