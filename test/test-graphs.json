@@ -1,6 +1,38 @@
 [
 	{
 		"adjacencies": {
+			"a0": [ "a1", "b1", "c1" ],
+			"a1": [ "a2" ],
+			"a2": [ "a3" ],
+			"b1": [ "b2" ],
+		},
+		"sources": [ "a0" ],
+		"sinks": [ "a3", "b2", "c1" ],
+		"pathsCount": 3,
+		"pathGroups": [
+			{
+				"length": 4,
+				"paths": [
+					[ "a0", "a1", "a2", "a3" ]
+				]
+			},
+			{
+				"length": 3,
+				"paths": [
+					[ "a0", "b1", "b2" ]
+				]
+			},
+			{
+				"length": 2,
+				"paths": [
+					[ "a0", "c1" ]
+				]
+			}
+		],
+		"optionSets": { "default": { "vertexOptions": {} } }
+	},
+	{
+		"adjacencies": {
 			"foo": [ "bar", "baz" ],
 			"zip": [ "bar", "zappity" ],
 			"bar": [ "baz" ],
