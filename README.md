@@ -102,3 +102,61 @@ Or this:
 
     OkayGo --> AndSecond --> WellWasntThatFun --> ThatsAllFolks
           \_________________/`
+
+### Ambiguities in Paths which Split and Rejoin Mid Way
+
+Consider the following graph:
+
+    Start --> Decide --> DoOneThing --> DoAnother --> WellThatWasFun --> Bye
+      \           \                                   ^
+       V           V                                 /
+       OhOkay --> StillNo --------------------------'
+
+The first thing that happens of course is the longest path gets weighted.
+
+    Start -[1/5]-> Decide -[1/5]-> DoOneThing -[1/5]-> DoAnother -[1/5]-> WellThatWasFun -[1/5]-> Bye
+      \               \                                                   ^
+       V               V                                                 /
+       OhOkay ------> StillNo ------------------------------------------'
+
+There's now a problem, however.  Depending on if weighting starts at `Decide` or `OhOkay`, the remaining two paths in the graph will have different weights, but which way the weights are distributed cannot be known unless additional behavior is defined.
+
+For instance, if the algorithm should prefer to first weight paths that have fewer weights already defined, we end up with this:
+
+    Start -[1/5]-> Decide -[1/5]-> DoOneThing -[1/5]-> DoAnother -[1/5]-> WellThatWasFun -[1/5]-> Bye
+      \                \                                                  ^
+     [4/15]             \                                                /
+        V                V                                              /
+        OhOkay -[4/15]-> StillNo ---------------------[4/15]-----------'
+    
+    then
+    
+    Start -[1/5]-> Decide -[1/5]-> DoOneThing -[1/5]-> DoAnother -[1/5]-> WellThatWasFun -[1/5]-> Bye
+      \                \                                                  ^
+     [4/15]           [1/3]                                              /
+        V                V                                              /
+        OhOkay -[4/15]-> StillNo ---------------------[4/15]-----------'
+
+But if you take instead the paths which have the most weighted first, you end up with this:
+
+    Start -[1/5]-> Decide -[1/5]-> DoOneThing -[1/5]-> DoAnother -[1/5]-> WellThatWasFun -[1/5]-> Bye
+      \                \                                                  ^
+       \              [3/10]                                             /
+        V                V                                              /
+        OhOkay --------> StillNo ---------------------[3/10]-----------'
+    
+    then
+    
+    Start -[1/5]-> Decide -[1/5]-> DoOneThing -[1/5]-> DoAnother -[1/5]-> WellThatWasFun -[1/5]-> Bye
+      \                \                                                  ^
+     [1/4]            [3/10]                                             /
+        V                V                                              /
+        OhOkay -[1/4]-> StillNo ---------------------[3/10]------------'
+
+While the values derived either way are somewhat close, they're still different, certainly enough that without a defined order in Map and Set, the algorithm would not be stable over a given set.  Ideally, the algorithm is stable regardless of whether or not the implementation of any unordered collection type actually has a hidden order, so to cope with this the algorithm here has switchable behavior defined here:
+- The default, which is to prefer to operate first on paths whose edges have fewer weights already assigned
+- To prefer to operate first on paths whose edges have more weights already assigned
+
+The choice of which behavior to use is arbitrary.
+
+Note that while there may be cases where there are a number of paths with the same number of unweighted edges, the order there is unimportant since the weight remainder would always end up divided across the same number of unweighted edges, so sorting by the number of unweighted edges once before weighting each path of a certain length is sufficient to disambiguate things here.

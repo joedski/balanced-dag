@@ -178,6 +178,13 @@ const allPaths = exports.allPaths = function( edges ) {
 
 // impure
 const balancedEdges = exports.balancedEdges = function( edges, paths ) {
+	// TODO: Group edges by path length, then operate on each group.
+	// This should be trivial since they are already sorted.
+	// Then, in each group, for each path:
+	//   calculate beforehand the number of unweighted edges and order according to the greatest (or least) number.
+	//   Then in that order assign weights.
+	//     Do not alter the order even though these assignments will inevitably change the number of edges already weighted.
+
 	paths.forEach( path => {
 		let { weighted, unweighted } = groupedEdges( edges, path );
 		let existing = Fraction( 0 );
