@@ -274,14 +274,6 @@ test( "balancedEdges", t => {
 
 
 test.todo( "balancedProgresses" );
-/**
-Thoughts:
-Get the paths and balanced edge weights,
-then, use balancedProgresses to calculate the progresses in each path way.
-then iterate through each path and:
-	manually calculate the vertex progresses in each path in isolation.
-	Then, compare the re
-**/
 
 test.todo( "withoutArtificialVertices" );
 test.todo( "withoutArtificialVertexEdges" );

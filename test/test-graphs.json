@@ -90,13 +90,53 @@
 		"pathCount": 6,
 		"optionSets": {
 			"default": {
-				"vertexOptions": {},
+				"vertexOptions": {}
 			},
 			"noStartProgress": {
 				"vertexOptions": {
 					"a0": { "progress": false }
 				}
 			},
+		}
+	},
+	{
+		"id": "ambiguous case 1 variation a",
+		"adjacencies": {
+			"Start": [ "Decide", "OhOkay" ],
+			"Decide": [ "DoOneThing", "StillNo" ],
+			"DoOneThing": [ "DoAnother" ],
+			"OhOkay": [ "StillNo" ],
+			"DoAnother": [ "WellThatWasFun" ],
+			"StillNo": [ "WellThatWasFun" ],
+			"WellThatWasFun": [ "Bye" ]
+		},
+		"sources": [ "Start" ],
+		"sinks": [ "Bye" ],
+		"pathCount": 3,
+		"optionSets": {
+			"default": {
+				"vertexOptions": {}
+			}
+		}
+	},
+	{
+		"id": "ambiguous case 1 variation b",
+		"adjacencies": {
+			"Start": [ "OhOkay", "Decide" ],
+			"Decide": [ "StillNo", "DoOneThing" ],
+			"DoOneThing": [ "DoAnother" ],
+			"OhOkay": [ "StillNo" ],
+			"DoAnother": [ "WellThatWasFun" ],
+			"StillNo": [ "WellThatWasFun" ],
+			"WellThatWasFun": [ "Bye" ]
+		},
+		"sources": [ "Start" ],
+		"sinks": [ "Bye" ],
+		"pathCount": 3,
+		"optionSets": {
+			"default": {
+				"vertexOptions": {}
+			}
 		}
 	}
 ]

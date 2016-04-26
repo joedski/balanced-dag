@@ -185,20 +185,62 @@ const balancedEdges = exports.balancedEdges = function( edges, paths ) {
 	//   Then in that order assign weights.
 	//     Do not alter the order even though these assignments will inevitably change the number of edges already weighted.
 
-	paths.forEach( path => {
-		let { weighted, unweighted } = groupedEdges( edges, path );
-		let existing = Fraction( 0 );
+	let pathGroups = new Map();
+	let groupings = new Set();
 
-		weighted.forEach( e => {
-			existing = existing.add( e.weight );
+	paths.forEach( path => {
+		let group = pathGroups.get( path.length ) || [];
+		group.push( path );
+		pathGroups.set( path.length, group );
+
+		groupings.add( path.length );
+	});
+
+	let sortedGroupings = [ ...groupings ];
+	sortedGroupings.sort();
+	sortedGroupings.reverse();
+
+	sortedGroupings.forEach( groupIndex => {
+		let group = pathGroups.get( groupIndex );
+
+		// Possible optimization: Cache or memoize groupedEdges().
+		group.sort( ( a, b ) => {
+			let unweightedA = groupedEdges( edges, a ).unweighted;
+			let unweightedB = groupedEdges( edges, b ).unweighted;
+
+			return - (unweightedA.size - unweightedB.size);
 		});
 
-		let remainingWeightPerUnweighted = BASIS_WEIGHT.sub( existing ).div( unweighted.size );
+		group.forEach( path => {
+			let { weighted, unweighted } = groupedEdges( edges, path );
+			let existing = Fraction( 0 );
 
-		unweighted.forEach( e => {
-			e.weight = remainingWeightPerUnweighted;
+			weighted.forEach( e => {
+				existing = existing.add( e.weight );
+			});
+
+			let remainingWeightPerUnweighted = BASIS_WEIGHT.sub( existing ).div( unweighted.size );
+
+			unweighted.forEach( e => {
+				e.weight = remainingWeightPerUnweighted;
+			});
 		});
 	});
+
+	// paths.forEach( path => {
+	// 	let { weighted, unweighted } = groupedEdges( edges, path );
+	// 	let existing = Fraction( 0 );
+
+	// 	weighted.forEach( e => {
+	// 		existing = existing.add( e.weight );
+	// 	});
+
+	// 	let remainingWeightPerUnweighted = BASIS_WEIGHT.sub( existing ).div( unweighted.size );
+
+	// 	unweighted.forEach( e => {
+	// 		e.weight = remainingWeightPerUnweighted;
+	// 	});
+	// });
 
 	return edges;
 }
